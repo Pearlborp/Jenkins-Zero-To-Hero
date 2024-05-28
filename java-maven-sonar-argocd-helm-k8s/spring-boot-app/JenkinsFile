@@ -8,13 +8,13 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
+        sh 'chown -R root:root $WORKSPACE' // Ensure the workspace is owned by root
         git branch: 'main', url: 'https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero.git'
       }
     }
     stage('Build and Test') {
       steps {
         sh 'ls -ltr'
-        // build the project and create a JAR file
         sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
       }
     }
@@ -54,6 +54,7 @@ pipeline {
             set -e
             git config user.email "monsoonborpuzari@gmail.com"
             git config user.name "Pearlborp"
+            git config --global --add safe.directory /var/jenkins_home/workspace
             echo "Pulling latest changes from main branch..."
             git pull https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git main
             echo "Updating deployment file..."
